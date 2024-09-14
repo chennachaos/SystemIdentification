@@ -29,7 +29,7 @@ zd = x.*y - 8.0*z./3.0;
 
 % Construct matrix X
 N = size(t,1);
-X = zeros(3*N,30);
+A = zeros(3*N,30);
 vvec = zeros(3*N,1);
 
 for i=1:N
@@ -38,19 +38,19 @@ for i=1:N
   ind2 = ind1+1;
   ind3 = ind1+2;
 
-  X(ind1, 1)  = 1.0;
-  X(ind1, 2)  = x(i);
-  X(ind1, 3)  = y(i);
-  X(ind1, 4)  = z(i);
-  X(ind1, 5)  = x(i)*x(i);
-  X(ind1, 6)  = y(i)*y(i);
-  X(ind1, 7)  = z(i)*z(i);
-  X(ind1, 8)  = x(i)*y(i);
-  X(ind1, 9)  = y(i)*z(i);
-  X(ind1, 10) = z(i)*x(i);
+  A(ind1, 1)  = 1.0;
+  A(ind1, 2)  = x(i);
+  A(ind1, 3)  = y(i);
+  A(ind1, 4)  = z(i);
+  A(ind1, 5)  = x(i)*x(i);
+  A(ind1, 6)  = y(i)*y(i);
+  A(ind1, 7)  = z(i)*z(i);
+  A(ind1, 8)  = x(i)*y(i);
+  A(ind1, 9)  = y(i)*z(i);
+  A(ind1, 10) = z(i)*x(i);
 
-  X(ind2, 11:20) = X(ind1, 1:10);
-  X(ind3, 21:30) = X(ind1, 1:10);
+  A(ind2, 11:20) = A(ind1, 1:10);
+  A(ind3, 21:30) = A(ind1, 1:10);
 
   vvec(ind1) = xd(i);
   vvec(ind2) = yd(i);
@@ -59,7 +59,7 @@ end
 
 format long g
 
-coeffs = inv(X'*X)*X'*vvec;
+coeffs = inv(A'*A)*A'*vvec;
 coeffs = reshape(coeffs,10,3)'
 
 
@@ -71,11 +71,11 @@ coeffs = reshape(coeffs,10,3)'
 t1 = t;
 data1 = data;
 
-myfun2 = @(t,y) [coeffs(1,1)+coeffs(1,2)*y(1)+coeffs(1,3)*y(2)+coeffs(1,4)*y(3)+coeffs(1,5)*y(1)*y(1)+coeffs(1,6)*y(2)*y(2)+coeffs(1,7)*y(3)*y(3)+coeffs(1,8)*y(1)*y(2)+coeffs(1,9)*y(2)*y(3)+coeffs(1,10)*y(1)*y(3);
-                 coeffs(2,1)+coeffs(2,2)*y(1)+coeffs(2,3)*y(2)+coeffs(2,4)*y(3)+coeffs(2,5)*y(1)*y(1)+coeffs(2,6)*y(2)*y(2)+coeffs(2,7)*y(3)*y(3)+coeffs(2,8)*y(1)*y(2)+coeffs(2,9)*y(2)*y(3)+coeffs(2,10)*y(1)*y(3);
-                 coeffs(3,1)+coeffs(3,2)*y(1)+coeffs(3,3)*y(2)+coeffs(3,4)*y(3)+coeffs(3,5)*y(1)*y(1)+coeffs(3,6)*y(2)*y(2)+coeffs(3,7)*y(3)*y(3)+coeffs(3,8)*y(1)*y(2)+coeffs(3,9)*y(2)*y(3)+coeffs(3,10)*y(1)*y(3)];
+##myfun2 = @(t,y) [coeffs(1,1)+coeffs(1,2)*y(1)+coeffs(1,3)*y(2)+coeffs(1,4)*y(3)+coeffs(1,5)*y(1)*y(1)+coeffs(1,6)*y(2)*y(2)+coeffs(1,7)*y(3)*y(3)+coeffs(1,8)*y(1)*y(2)+coeffs(1,9)*y(2)*y(3)+coeffs(1,10)*y(1)*y(3);
+##                 coeffs(2,1)+coeffs(2,2)*y(1)+coeffs(2,3)*y(2)+coeffs(2,4)*y(3)+coeffs(2,5)*y(1)*y(1)+coeffs(2,6)*y(2)*y(2)+coeffs(2,7)*y(3)*y(3)+coeffs(2,8)*y(1)*y(2)+coeffs(2,9)*y(2)*y(3)+coeffs(2,10)*y(1)*y(3);
+##                 coeffs(3,1)+coeffs(3,2)*y(1)+coeffs(3,3)*y(2)+coeffs(3,4)*y(3)+coeffs(3,5)*y(1)*y(1)+coeffs(3,6)*y(2)*y(2)+coeffs(3,7)*y(3)*y(3)+coeffs(3,8)*y(1)*y(2)+coeffs(3,9)*y(2)*y(3)+coeffs(3,10)*y(1)*y(3)];
 
-[t2,data2] = ode45(myfun2, [0:dt:40.0], y0);
+[t2,data2] = ode45(@myfun2, [0:dt:40.0], y0);
 
 
 %set(gcf, 'PaperUnits', 'inches');
